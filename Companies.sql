@@ -91,17 +91,21 @@ INSERT INTO Insurance (insurance_ID, Price, insuranceType, description) VALUES
 INSERT INTO Insurance (insurance_ID, Price, insuranceType, description) VALUES
 (3, 1700, 'AutoKasko', 'Comprehensive coverage for automobiles');
 
+DROP VIEW info1;
 
+UPDATE SalaryPayments
+SET employee_id = salary_ID
+WHERE salary_ID  = 5;
 -- ex.1
-CREATE VIEW Info AS
-SELECT c.Name AS CustomerName, i.insuranceType AS Type, IC.NameOfCompanies,e.Name AS NameOfBroker,i.description
+CREATE VIEW Info1 AS
+SELECT c.Name AS CustomerName, i.insuranceType AS Type, IC.NameOfCompanies,e.Name AS NameOfBroker
 FROM Customers AS c
--- JOIN InsurancePolicies AS ip ON c.customer_ID = ip.policies_ID
+JOIN CustomerEmployee CE on c.customer_ID = CE.customers_ID
 JOIN Insurance AS i ON c.customer_ID = i.customer_id
 JOIN InsuranceCompanies AS IC ON i.insurance_ID = IC.insurances_id
 JOIN Employees AS e ON IC.companies_Id = e.companies_id
 WHERE i.insuranceType = 'AutoKasko'
-ORDER BY i.description DESC
+ORDER BY i.insurance_ID DESC
 LIMIT 2;
 
 -- ex.2
@@ -116,5 +120,5 @@ SELECT SUM(i.Price) AS totalPrice,e.Name AS Names
 FROM Insurance AS i
 JOIN Employees AS e ON i.insurance_ID = e.insure_id
 WHERE i.insuranceType = 'Car Insurance'
-GROUP BY i.insurance_ID
-HAVING totalPrice > 100;
+GROUP BY e.Name
+HAVING totalPrice >= 1000;
