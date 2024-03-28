@@ -97,10 +97,9 @@ UPDATE SalaryPayments
 SET employee_id = salary_ID
 WHERE salary_ID  = 5;
 -- ex.1
-CREATE VIEW Info1 AS
+CREATE VIEW Info5 AS
 SELECT c.Name AS CustomerName, i.insuranceType AS Type, IC.NameOfCompanies,e.Name AS NameOfBroker
 FROM Customers AS c
-JOIN CustomerEmployee CE on c.customer_ID = CE.customers_ID
 JOIN Insurance AS i ON c.customer_ID = i.customer_id
 JOIN InsuranceCompanies AS IC ON i.insurance_ID = IC.insurances_id
 JOIN Employees AS e ON IC.companies_Id = e.companies_id
