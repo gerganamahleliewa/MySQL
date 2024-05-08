@@ -105,11 +105,13 @@ FROM customers AS c
 JOIN properties AS p on c.id = p.customer_id
 JOIN
     ads AS a ON p.id = a.property_id
+JOIN action AS a2 on a2.id = a.action_id
 JOIN
     deals AS d ON a.id = d.ad_id
 JOIN
     employees AS e ON d.employee_id = e.id
-WHERE e.position = 'BROKER';
+WHERE a2.actionType = 'SELL' AND MONTH(deal_date) = MONTH(CURDATE()) AND YEAR(deal_date) = YEAR(CURDATE())
+ORDER BY p.price;
 
 
 -- ex.2
@@ -127,7 +129,11 @@ BEGIN
     FROM deals d
     JOIN ads a ON d.ad_id = a.id
     JOIN properties p ON a.property_id = p.id
-    WHERE MONTH(d.deal_date) = Month AND YEAR(d.deal_date) = Year;
+    JOIN employees e on d.employee_id = e.id
+    JOIN salary_payments sp on e.id = sp.employee_id
+    WHERE MONTH(d.deal_date) = Month AND YEAR(d.deal_date) = Year
+    ORDER BY total_sales desc
+    LIMIT 3;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
@@ -154,8 +160,10 @@ read_l: LOOP
                                                   END);
         END IF;
 
-        INSERT INTO salary_payments(employee_id,monthly_bonus)
-        VALUES (broker_id,commission);
+        UPDATE salary_payments
+        SET monthly_bonus = commission
+        WHERE broker_id = employee_id AND
+        MONTH(payment_month) = Month AND YEAR(payment_year) = Year;
 end loop;
 
 CLose dealsCursor;
@@ -200,11 +208,6 @@ SELECT COUNT(*) INTO num_deals
 END //
 DELIMITER ;
 
-  SELECT COUNT(*)
-          FROM ads AS a
-          JOIN properties p ON a.property_id = p.id
-          WHERE  a.action_id = (SELECT id FROM action WHERE actionType = 'RENT')
-          AND a.is_actual = true;
 
 -- ex.4
 DROP TRIGGER IF EXISTS podnaem;
