@@ -125,14 +125,14 @@ BEGIN
     DECLARE broker_id INT;
 
     DECLARE dealsCursor CURSOR FOR
-    SELECT d.deal_id,(p.price)
+    SELECT d.deal_id,p.price
     FROM deals d
     JOIN ads a ON d.ad_id = a.id
     JOIN properties p ON a.property_id = p.id
     JOIN employees e on d.employee_id = e.id
     JOIN salary_payments sp on e.id = sp.employee_id
     WHERE MONTH(d.deal_date) = Month AND YEAR(d.deal_date) = Year
-    ORDER BY total_sales desc
+    ORDER BY p.price desc
     LIMIT 3;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
