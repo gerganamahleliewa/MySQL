@@ -161,7 +161,7 @@ read_l: LOOP
         END IF;
 
         UPDATE salary_payments
-        SET monthly_bonus = commission
+        SET monthly_bonus = monthly_bonus + commission
         WHERE broker_id = employee_id AND
         MONTH(payment_month) = Month AND YEAR(payment_year) = Year;
 end loop;
